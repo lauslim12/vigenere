@@ -1,0 +1,31 @@
+name: Tag and update library
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to bump to with the 'v' prefix (example: v1.0.0)"
+        required: true
+        type: string
+
+jobs:
+  tag-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Push tag to the latest commit
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ github.event.inputs.version }}",
+              sha: context.sha
+            })
+
+      - name: Ping the 'proxy.golang.org' to update the documentation
+        run: curl https://proxy.golang.org/github.com/lauslim12/vigenere/@v/${{ github.event.inputs.version }}.info

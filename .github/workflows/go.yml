@@ -1,0 +1,26 @@
+name: Go
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  go-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up environment
+        run: |
+          GO_VERSION=`sed -n '3p' go.mod | awk '{print $2}'`
+          echo "GO_VERSION=${GO_VERSION}" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Test library
+        run: go test -v -cover ./... ./...
