@@ -105,7 +105,7 @@ import "github.com/lauslim12/vigenere"
 - Instantiate the `Vigenere` structure in your code, and define your plaintext.
 
 ```go
-vigenere, err := vigenere.NewVigenere(nil) // Use default alphabets.
+vigenere, err := vigenere.NewVigenere(nil) // Use default alphabets (A - Z in uppercase).
 if err != nil {
     log.Fatal(err.Error())
 }
@@ -146,15 +146,15 @@ The program may panic (runtime error, usually the error is slice index out of ra
 
 - **Wouldn't it be better to use `rune` and ASCII characters instead of using slices for the alphabets?**
 
-I have thought about using ASCII characters. It can be done by subtracting with `65` to get the numerical representative for the `A` character. I also have no need to create slices if I use ASCII characters. However, it comes at a cost, that is: I cannot use custom alphabets for the cipher. If I use `string` and slices, using custom alphabets is more than possible.
+I have thought about using ASCII characters. It can be done by subtracting with `65` to get the numerical representative for the `A` character (we assume that A is zero). I also have no need to create slices if I use ASCII characters. However, it comes at a cost, that is: I cannot use custom alphabets for the cipher. If I use `string` and slices, using custom alphabets is more than possible.
 
-- **Why the time and space complexity can be so high? O(N) and O(N^2) seems a bit over the top.**
+- **Why the time and space complexity can be so high? `O(N)` and `O(N^2)` seems a bit over the top.**
 
-The time complexity is a bit high because of the utilization of slices. I prefer to use slices over `map[string]int64` as slices are simpler and I believe it is enough for this use-case. I don't think someone wants to encrypt a string with over 1.000.000 runes / letters as its character set. If I were to use the ASCII style as above, I would be able to reach O(1) efficiency, but we would not be able to use custom alphabets.
+The time complexity is a bit high because of the utilization of slices. I prefer to use slices over `map[string]int64` as slices are simpler and I believe it is enough for this use-case. I don't think someone wants to encrypt a string with over 1.000.000 runes / letters as its character set. If I were to use the ASCII style as above, I would be able to reach `O(1)` efficiency, but we would not be able to use custom alphabets.
 
 ## Examples
 
-Please see examples at [the example project(`example/main.go`)](./example). You may run it by using `go run example/main.go` and the results will be shown instantly.
+Please see examples at [the example project (`example/main.go`)](./example). You may run it by using `go run example/main.go` and the results will be shown instantly.
 
 ## Contributing
 
