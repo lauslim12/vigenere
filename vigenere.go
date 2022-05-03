@@ -41,16 +41,16 @@ var errDecryptLengthNotEqual = errors.New("Decrypt: ciphertext and secret are no
 // errEncryptLengthNotEqual is an error that will be thrown if `Encrypt` secret key's length is less than the plaintext.
 var errEncryptLengthNotEqual = errors.New("Encrypt: plaintext and secret are not of equal length")
 
-// Vigenere provides a struct to hold the required alphabets and its length.
+// Vigenere provides a struct to hold the required alphabets, its length, and its source of randomness.
 type Vigenere struct {
-	Alphabets    []string  // List of alphabets or characters to be used for the algorithm. Do not input duplicate characters. Data type is not `rune` for interoperability (Go internally uses UTF-8 encoding).
-	Length       int64     // Length of `Alphabets` slice. Automatically created in order to not waste time and space.
-	RandomSource io.Reader // Source of the random number generator. Automatically set to `rand.Reader` from `crypto/rand` module for pseudorandom number generation.
+	Alphabets    []string  // List of alphabets or characters to be used for the algorithm. The numerical equivalent of the alphabet is the slice index. Do not input duplicate characters. Data type is not `rune` for interoperability (Go internally uses UTF-8 encoding).
+	Length       int64     // Length of `Alphabets` slice. Automatically created in order to not waste time and space in various methods in which this attribute is used.
+	RandomSource io.Reader // Source of the random number generator. Automatically set to `rand.Reader` in order to use `crypto/rand` module for pseudorandom number generation.
 }
 
 // NewVigenere creates a new instance of `Vigenere`, along with its methods. If you desire
 // to use the default alphabets, pass `nil` or `{}string[]` as the argument. This method will
-// throw an error if you pass any duplicate alphabets ('A' and 'A' for example).
+// throw an error if you pass any duplicate alphabets (passing 'A' and 'A' for example).
 func NewVigenere(alphabets []string) (*Vigenere, error) {
 	set := make(map[string]bool, 0)
 
@@ -92,7 +92,8 @@ func (v *Vigenere) ConvertToNumeric(str string) []int64 {
 }
 
 // ConvertToString converts an int64 slice to their alphabet equivalent, and
-// transforms them to a single string, ready to be used.
+// transforms them to a single string, ready to be used. Essentially, the slice index
+// is the numerical equivalent of an alphabet.
 func (v *Vigenere) ConvertToString(numbers []int64) string {
 	str := make([]string, 0)
 
@@ -103,7 +104,8 @@ func (v *Vigenere) ConvertToString(numbers []int64) string {
 	return strings.Join(str, "")
 }
 
-// Decrypt decrypts a ciphertext with a secret key. Returns the plaintext.
+// Decrypt decrypts a ciphertext with a secret key. Make sure that the secret key is equal in length with the
+// ciphertext. Returns the plaintext.
 func (v *Vigenere) Decrypt(ciphertext, secret string) (string, error) {
 	// Prepare a slice to hold the plaintext numerical representative.
 	plaintext := make([]int64, 0)
@@ -133,7 +135,8 @@ func (v *Vigenere) Decrypt(ciphertext, secret string) (string, error) {
 	return v.ConvertToString(plaintext), nil
 }
 
-// Encrypt encrypts a plaintext with a secret key. Returns the ciphertext.
+// Encrypt encrypts a plaintext with a secret key. Make sure that the secret key is equal in length with the
+// plaintext. Returns the ciphertext.
 func (v *Vigenere) Encrypt(plaintext, secret string) (string, error) {
 	// Prepare a slice to hold the ciphertext numerical representative.
 	ciphertext := make([]int64, 0)
