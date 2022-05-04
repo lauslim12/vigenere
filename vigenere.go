@@ -6,17 +6,17 @@
 //
 // The plaintext and secret itself must conform to the alphabets defined beforehand, or the encryption process will ignore the alphabet (may cause
 // errors). In this library, there is a function named `ValidateString` which will validate whether the plaintext inserted into the function
-// is correct or not. There should also not be any duplicates in the character set. The default character set / alphabets is A to Z (uppercase only).
+// is correct or not. There should also not be any duplicates in the character set. The default character set / alphabets is A to Z (uppercase only,
+// with index of the slice starting from zero to 25).
 //
 // This library attempts its best to conform to SRP (Single Responsibility Principle). Basically, this library expects you to understand
 // the process (what to do) when performing encryption or decryption, but in most cases, all you need to do is (example for encryption):
-//
-// - Instantiate a new `Vigenere` struct.
-// - Receive a plaintext from the user, verify if the plaintext conforms to the character set / alphabets.
-// - Ensure that the secret given by the user is equal in length with the plaintext, if not, we can generate our own secrets.
-// - Encrypt the data.
-// - Done, and you'll get the ciphertext.
-// - You are free to use the output in any form as you see fit: UTF-8, Base32, Base64, Base16 (Hex), Buffer/Bytes, or anything.
+// 		- Instantiate a new `Vigenere` struct.
+//		- Receive a plaintext from the user, verify if the plaintext conforms to the character set / alphabets.
+// 		- Ensure that the secret given by the user is equal in length with the plaintext, if not, we can generate our own secrets.
+// 		- Encrypt the data.
+// 		- Done, and you'll get the ciphertext.
+// 		- You are free to use the output in any form as you see fit: UTF-8, Base32, Base64, Base16 (Hex), Buffer/Bytes, or anything.
 //
 // To check the implementation as a console application, see example at `example/main.go`.
 package vigenere
