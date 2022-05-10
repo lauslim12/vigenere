@@ -5,8 +5,8 @@ on:
     branches: [main]
 
 jobs:
-  go-ci:
-    runs-on: ubuntu-latest
+  verification-and-tests:
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout code
@@ -22,5 +22,37 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
 
-      - name: Test library
-        run: go test -v -cover ./... ./...
+      - name: Verify dependencies (if any)
+        run: go mod verify
+
+      - name: Examine source code for any suspicious, abormal, or unused code
+        run: go vet ./...
+
+      - name: Test library (unit-tests)
+        run: go test -race -v -cover ./... ./...
+
+      - name: Build library and discard the results
+        run: go build -v ./...
+
+  lint:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up environment
+        run: |
+          GO_VERSION=`sed -n '3p' go.mod | awk '{print $2}'`
+          echo "GO_VERSION=${GO_VERSION}" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Lint source code using 'golangci-lint'
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.46.0
+          args: -v
